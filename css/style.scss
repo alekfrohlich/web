@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+body {
+    background: lightgray;
+    margin: 0;
+    font-family: 'Poppins';
+}
+
+.navbar {
+    background: white;
+    padding: 1em;
+
+    .logo {
+        text-decoration: none;
+        font-weight: bold;
+        color:rgb(189, 170, 0);
+        font-size: 1.2em;
+
+        span {
+            color: black;
+        }
+    }
+
+    nav.menu-btn {
+        display: block;
+    }
+
+    nav {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        width: 66%;
+        right: 0;
+        top: 0;
+        background: darkgoldenrod;
+        height: 100vh;
+        padding: 1em;
+
+        ul.primary-nav {
+            margin-top: 3em;
+        }
+
+        li {
+            a {
+                color: black;
+                text-decoration: none;
+                display: block;
+                padding: .5em;
+                font-size: 1.3em;
+                text-align: right;
+            }
+
+            &:hover {
+                font-weight: bold;
+            }
+        }
+    }
+
+    .container {
+        display: flex;
+        place-content: space-between;
+    }
+
+    .mobile-menu {
+        cursor: pointer;
+    }
+
+    .mobile-menu-exit {
+        float: right;
+        margin: .5em;
+        cursor: pointer;
+    }
+}
+
+a {
+    color: black;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+section {
+    padding: 0em 2em;
+    text-align: center;
+
+    li {
+        background: gray;
+        border-radius: 4em;
+        padding: 1em 2em;
+        margin-bottom: 1em;
+        display: inline-block;
+    }
+
+    .post-title {
+        text-decoration: none;
+        font-size: 1.2em;
+    }
+
+    .post-cite {
+        display: block;
+        font-size: 0.9em;
+    }
+
+    .post-image {
+        width: 200px;
+        height: 200px;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .mobile-menu, .mobile-menu-exit {
+        display: none;
+    }
+
+    .navbar {
+        .container {
+            display: grid;
+            grid-template-columns: 180px auto;
+            justify-content: unset;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            background: none;
+            position: unset;
+            height: auto;
+            width: 100%;
+            padding: 0;
+
+            ul.primary-nav {
+                margin: 0;
+            }
+
+            ul {
+                display: flex;
+            }
+
+            li {
+                a {
+                    color: black;
+                    font-size: 1em;
+                    padding: .1em 1em;
+                }
+            }
+        }
+    }
+
+    section {
+        h1 {
+            margin-bottom: 2em;
+        }
+        li {
+            margin-left: 5em;
+        }
+    }
+}
