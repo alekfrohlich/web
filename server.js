@@ -5,6 +5,14 @@ var path = require('path');
 const hostname = '127.0.0.1';
 const port = 3000;
 
+const extNameToContentType = {
+    html: 'text/html',
+    js:   'text/javascript',
+    css:  'text/css',
+    ico:  'image/x-icon',
+    svg:  'image/svg+xml',
+}
+
 class Page {
     constructor(title){ this.title = title; this.components = []; }
     render(){
@@ -38,7 +46,7 @@ class Navbar {
                 <nav>\
                     <img id=exit-menu class="mobile-menu-exit" src="images/exit.svg" alt="Close Navigation">\
                     <ul class="primary-nav">\
-                        <li><a href="./test.html">Home</a></li>\
+                        <li><a href="./index.html">Home</a></li>\
                         <li><a href="./about.html">About</a></li>\
                     </ul>\
                     <ul class="login-nav">\
@@ -86,42 +94,47 @@ class Posts {
     }
 }
 
+class Text {
+    constructor(text) { this.text = text; }
+    render() {
+        return `<p>${this.text}</p>`;
+    }
+}
+
 // Register request event
 const server = http.createServer(function (req, res) {
     console.log(`${req.method} ${req.url}`);
 
-    var filePath = '.' + req.url;
+    const filePath = '.' + req.url;
     if (filePath == './')
         filePath = './index.html';
 
-    // This just returns the file the user wanted
-    var extName = path.extname(filePath);
-    console.log(extName);
-    var contentType = 'text/html';
-    switch (extName) {
-        case '.js':
-            contentType = 'text/javascript';
-            break;
-        case '.css':
-            contentType = 'text/css';
-            break;
-        case '.ico':
-            contentType = 'image/x-icon';
-            break;
-    }
+    const extName = path.extname(filePath).slice(1);
+    const contentType = extNameToContentType[extName];
 
-    // Server Side Rendering
-    if (extName == '.html') {
-        res.writeHead(200, {'Content-Type': contentType});
-        let homePage = new Page('Home | MathBlog');
-        let navBar = new Navbar();
-        let posts = new Posts();
-        homePage.addComponent(navBar);
-        homePage.addComponent(posts);
-        res.end(homePage.render());
+    // Dynamically build html from JS components
+    if (extName == 'html') {
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        let page;
+        switch (req.url) {
+            case '/':
+            case '/index.html':
+                page = new Page('Home | MathBlog');
+                page.addComponent(new Navbar());
+                page.addComponent(new Posts());
+                break;
+            case '/about.html':
+                page = new Page('About | MathBlog');
+                page.addComponent(new Navbar());
+                page.addComponent(new Text('This is a Math Blog.'));
+                break;
+        }
+        res.end(page.render());
     } else {
         fs.readFile(filePath, function (err, data) {
             if (err) {
+                //NOTE: We are assuming that errors can only come from the user entering a
+                //      non-existing path.
                 fs.readFile('./404.html', function(err, data) {
                     res.writeHead(404, { 'Content-Type': contentType });
                     res.end(err);
