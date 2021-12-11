@@ -14,7 +14,11 @@ const extNameToContentType = {
 }
 
 class Page {
-    constructor(title){ this.title = title; this.components = []; }
+    constructor(title){
+        this.title = title;
+        this.bodyComponents = [];
+        this.headComponents = [];
+    }
     render(){
         let html;
         html =  '<!DOCTYPE html>';
@@ -22,18 +26,20 @@ class Page {
         html += '<head>';
         html += "<meta charset='utf-8'><meta http-equiv='X-UA-Compatible' content='IE=edge'><meta name='viewport' content='width=device-width, initial-scale=1'>";
         html += `<title>${this.title}</title>`;
+        for (const hc of this.headComponents) {
+            html += hc.render();
+        }
         html += '<link rel="stylesheet" href="css/style.css">';
         html += '</head>';
         html += '<body>';
-        for (const c of this.components) {
-            html += c.render();
+        for (const bc of this.bodyComponents) {
+            html += bc.render();
         }
         html += '</body></html>';
         return html;
     }
-    addComponent(c) {
-        this.components.push(c);
-    }
+    addBodyComponent(c) { this.bodyComponents.push(c); }
+    addHeadComponent(c) { this.headComponents.push(c); }
 }
 
 class Navbar {
@@ -70,19 +76,19 @@ class Posts {
                 </h1>\
                 <ul>\
                     <li>\
-                        <a href="#" class="post-title">Fibonacci Sequence\
+                        <a href="12-12-2021-alekfr-fib.html" class="post-title">Fibonacci Sequence\
                         <cite class="post-cite">Alek</cite>\
                         <img src="images/illustration.svg" class="post-image" alt="Illustration">\
                         </a>\
                     </li>\
                     <li>\
-                        <a href="#" class="post-title">Euler\'s Number\
+                        <a href="12-13-2021-smartfella-eulersnum.html" class="post-title">Euler\'s Number\
                         <cite class="post-cite">Smart Fella</cite>\
                         <img href="#" src="images/illustration.svg" class="post-image" alt="Illustration">\
                         </a>\
                     </li>\
                     <li>\
-                        <a href="#" class="post-title">Numeric Integrals\
+                        <a href="12-14-2021-fartsmella-numericintegrals.html" class="post-title">Numeric Integrals\
                         <cite class="post-cite">Fart Smella</cite>\
                         <img src="images/illustration.svg" class="post-image" alt="Illustration">\
                         </a>\
@@ -97,7 +103,17 @@ class Posts {
 class Text {
     constructor(text) { this.text = text; }
     render() {
-        return `<p>${this.text}</p>`;
+        return this.text;
+    }
+}
+
+class MathJax {
+    constructor() {}
+    render() {
+        let html;
+        html  = '<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>';
+        html += '<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>';
+        return html;
     }
 }
 
@@ -105,7 +121,7 @@ class Text {
 const server = http.createServer(function (req, res) {
     console.log(`${req.method} ${req.url}`);
 
-    const filePath = '.' + req.url;
+    let filePath = '.' + req.url;
     if (filePath == './')
         filePath = './index.html';
 
@@ -120,14 +136,22 @@ const server = http.createServer(function (req, res) {
             case '/':
             case '/index.html':
                 page = new Page('Home | MathBlog');
-                page.addComponent(new Navbar());
-                page.addComponent(new Posts());
+                page.addBodyComponent(new Navbar());
+                page.addBodyComponent(new Posts());
                 break;
             case '/about.html':
                 page = new Page('About | MathBlog');
-                page.addComponent(new Navbar());
-                page.addComponent(new Text('This is a Math Blog.'));
+                page.addBodyComponent(new Navbar());
+                page.addBodyComponent(new MathJax('This is a Math Blog.'));
                 break;
+            // For posts/
+            default:
+                // Render Fibonacci Sequence
+                title = 'Fibonacci Sequence';
+                page = new Page(title+' | MathBlog');
+                page.addHeadComponent(new MathJax());
+                page.addBodyComponent(new Navbar());
+                page.addBodyComponent(new Text(String.raw`$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$`));
         }
         res.end(page.render());
     } else {
