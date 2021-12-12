@@ -35,7 +35,7 @@ class Page {
         this.headComponents = [];
     }
     async render(){
-        
+
         return `
             <!DOCTYPE html>
             <html>
@@ -72,8 +72,8 @@ class Navbar {
                             <li><a href="/about.html">About</a></li>
                         </ul>
                         <ul class="login-nav">
-                            <li><a href="#">Sign in</a></li>
-                            <li><a href="#">Sign up</a></li>
+                            <li><a href="./login.html">Sign in</a></li>
+                            <li><a href="./signup.html">Sign up</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -90,7 +90,7 @@ class Posts {
         let dbo = db.db(DBNAME);
         let res = await dbo.collection('posts').find({}).toArray();
         await db.close();
-        
+
         return `
             <section class="posts">
                 <div class="container">
@@ -165,7 +165,7 @@ const server = http.createServer((req, res) => {
                         let dbo = db.db(DBNAME);
                         let post = await dbo.collection('posts').findOne({path: req.url});
                         await db.close();
-                        
+
                         // There should be a unique result since path is Primary Key
                         page = new Page(post.name+' | Mathblog');
                         page.addHeadComponent(new MathJax());
