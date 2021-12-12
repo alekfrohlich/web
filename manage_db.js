@@ -7,11 +7,13 @@ const URL         = 'mongodb://localhost:27017/';
 const DBNAME      = 'mathblog';
 
 // This will be subbed when the post form is functional on site
-const PATH      = '_posts/12-12-2021-alekfr-trigonometric-functions.html';
-const POSTNAME  = 'trigonometric-functions';
+// const PATH      = '/posts/12-12-2021-alekfr-trigonometric-functions.html';
+const PATH      = '/posts/12-13-2021-alekfr-basis-in-infinite-dimensional-vector-spaces.html';
+// const POSTNAME  = 'Trigonometric Functions';
+const POSTNAME  = 'Basis in Infinite Dimensional Vector Spaces';
 const AUTHOR    = 'alekfr';
-const POSTDATE  = '12-12-2021';
-const POST      = fs.readFileSync(PATH);
+const POSTDATE  = '12-13-2021';
+const POST      = fs.readFileSync('.'+PATH).toString('utf-8');
 
 let option;
 if (process.argv.length < 2)
@@ -24,7 +26,7 @@ switch (option) {
         mongoClient.connect(URL+DBNAME, function(err, db) {
             if (err) throw err;
             console.log(`Database ${DBNAME} created!`);
-            dbo = db.db(DBNAME);
+            let dbo = db.db(DBNAME);
             dbo.createCollection('posts', function(err, res) {
                 if (err) throw err;
                 console.log('Collection posts created!');
@@ -35,9 +37,9 @@ switch (option) {
     case '-d': // delete database
         mongoClient.connect(URL, function(err, db) {
             if (err) throw err;
-            dbo = db.db(DBNAME);
+            let dbo = db.db(DBNAME);
             dbo.dropDatabase(function(status) {
-                console.log(`Dropped mathblog database with status ${status}`);
+                console.log(`Dropped mathblog database!`);
                 db.close();
             });
         });
@@ -45,8 +47,9 @@ switch (option) {
     case '-i': // insert hardcoded post
         mongoClient.connect(URL, function(err, db) {
             if (err) throw err;
-            dbo = db.db(DBNAME);
-            var post = {
+            let dbo = db.db(DBNAME);
+            let post = {
+                path:   PATH,
                 name:   POSTNAME,
                 author: AUTHOR,
                 date:   POSTDATE,
@@ -62,7 +65,7 @@ switch (option) {
     case '-l': // list posts
         mongoClient.connect(URL, function(err, db) {
             if (err) throw err;
-            dbo = db.db(DBNAME);
+            let dbo = db.db(DBNAME);
             dbo.collection('posts').find({}).toArray(function(err, res) {
                 if (err) throw err;
                 console.log(res);
