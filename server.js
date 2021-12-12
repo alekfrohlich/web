@@ -1,3 +1,12 @@
+// Proximos passos: assim que o Favarin terminar de escrever o HTML/CSS/JS dos formulários,
+// vamos poder salvar cadastros no banco mathblog. Depois poderemos implementar a postagem de novos posts.
+// Teremos três desafios:
+// 1. Como coletar e armazenar de forma segura as credenciais dos usuários?
+// 2. Como usar cookies para manter o estado de usuário logado?
+//  2.1 Como fazer uma Navbar alternativa pra usuário logado (os botões de sign-in e sign-up devem desaparecer
+//      e os botões de post e sign-out devem aparecer em seus lugares).
+// 3. Melhorar o design da aboutPage e da página das postagens, agora está horrível.
+
 var fs          = require('fs');
 var http        = require('http');
 var path        = require('path');
