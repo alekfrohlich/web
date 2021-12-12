@@ -72,6 +72,27 @@ body {
     }
 }
 
+.login {
+    label {
+        margin-bottom: 0.2em;
+        display: block;
+    }
+    input {
+        margin-bottom: 0.2em;
+        border: 1px;
+        border-radius: .3em;
+        padding: 0.5em 2em;
+        box-sizing: border-box;
+    }
+    input[type="submit"] {
+        margin-top: 1em;
+        background-color: rgb(189, 170, 0);
+        color: black;
+        font-weight: bold;
+        cursor: pointer;
+    }
+}
+
 a {
     color: black;
 }
