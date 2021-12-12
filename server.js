@@ -66,36 +66,28 @@ class Navbar {
     }
 }
 
+//TEMP
+posts = [
+    ['alekfr', '12-12-2021', 'Trigonometric Functions', String.raw`<p>The geometric definition of trig functions we learn in school are not rigourous since Euclidean Geometry (the results derived from Euclid's axioms) isn't trully just theorems from the axioms, it involves geometric intuition as well. Moreover, most of Modern Math is done inside the set theoretical framework of ZFC. Thus, even if we had learned geometry from Hilbert, which is rigorous, we would have to abandon it (the formal consequences; the intuition remains the same) when working with Analysis. Hence, the only viable alternative is to give abstract definitions for the trigonometric functions.</p><p>One example of such definition would be the power series representation of sine and cosine.</p>` + String.raw`$$\begin{align}\sin(x) &= \sum_{n=0}^\infty \frac{(-1)^n}{(2n+1)!}x^{2n+1} \\ \cos(x) &= \sum_{n=0}^\infty \frac{(-1)^n}{(2n)!}x^{2n}\end{align}$$`],
+    ['smartfella', '12-13-2021', 'Euler\'s Number', null],
+    ['fartsmella', '12-14-2021', 'Numeric Integrals', null],
+]
 class Posts {
-    constructor() {}
+    constructor(post_db) { this.post_db = post_db; }
     render() {
-        let html = '<section class="posts">\
-            <div class="container">\
-                <h1>\
-                    Latest Posts\
-                </h1>\
-                <ul>\
-                    <li>\
-                        <a href="12-12-2021-alekfr-fib.html" class="post-title">Fibonacci Sequence\
-                        <cite class="post-cite">Alek</cite>\
-                        <img src="images/illustration.svg" class="post-image" alt="Illustration">\
-                        </a>\
-                    </li>\
-                    <li>\
-                        <a href="12-13-2021-smartfella-eulersnum.html" class="post-title">Euler\'s Number\
-                        <cite class="post-cite">Smart Fella</cite>\
-                        <img href="#" src="images/illustration.svg" class="post-image" alt="Illustration">\
-                        </a>\
-                    </li>\
-                    <li>\
-                        <a href="12-14-2021-fartsmella-numericintegrals.html" class="post-title">Numeric Integrals\
-                        <cite class="post-cite">Fart Smella</cite>\
-                        <img src="images/illustration.svg" class="post-image" alt="Illustration">\
-                        </a>\
-                    </li>\
-                </ul>\
-            </div>\
-        </section>';
+        let html;
+        html  = '<section class="posts">';
+        html += '<div class="container">';
+        html += '<h1>Latest Posts</h1>';
+        html += '<ul>';
+
+        for (const p of posts) {
+            html += `<li><a href="${p[1]}-${p[0]}-${p[2].replace(/\s/g,"-").toLowerCase()}.html" class="post-title">${p[2]}`;
+            html += `<cite class="post-cite">${p[0]}</cite>`;
+            html += '<img src="images/illustration.svg" class="post-image" alt="Illustration"></a></li>';
+        }
+
+        html += '</ul></div></section>';
         return html;
     }
 }
@@ -144,14 +136,14 @@ const server = http.createServer(function (req, res) {
                 page.addBodyComponent(new Navbar());
                 page.addBodyComponent(new MathJax('This is a Math Blog.'));
                 break;
-            // For posts/
-            default:
-                // Render Fibonacci Sequence
-                title = 'Fibonacci Sequence';
+            case '/12-12-2021-alekfr-trigonometric-functions.html':
+                // Query database to find the post
+                title = posts[0][2];
                 page = new Page(title+' | MathBlog');
                 page.addHeadComponent(new MathJax());
                 page.addBodyComponent(new Navbar());
-                page.addBodyComponent(new Text(String.raw`$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$`));
+                page.addBodyComponent(new Text(posts[0][3]));
+                break;
         }
         res.end(page.render());
     } else {
