@@ -45,7 +45,7 @@ switch (option) {
         });
         break;
     case '-i': // insert hardcoded post
-        mongoClient.connect(URL, function(err, db) {
+        mongoClient.connect(URL, (err, db) => {
             if (err) throw err;
             let dbo = db.db(DBNAME);
             let post = {
