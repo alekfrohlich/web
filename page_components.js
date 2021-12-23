@@ -45,12 +45,12 @@ class Navbar {
                     <nav>
                         <img id=exit-menu class="mobile-menu-exit" src="/images/exit.svg" alt="Close Navigation">
                         <ul class="primary-nav">
-                            <li><a href="/index.html">Home</a></li>
-                            <li><a href="/about.html">About</a></li>
+                            <li><a href="/index">Home</a></li>
+                            <li><a href="/about">About</a></li>
                         </ul>
                         <ul class="login-nav">
-                            <li><a href="./login.html">Sign in</a></li>
-                            <li><a href="./signup.html">Sign up</a></li>
+                            <li><a href="/login">Sign in</a></li>
+                            <li><a href="/signup">Sign up</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -88,7 +88,7 @@ class Posts {
     }
 }
 
-
+//TODO: Favarin, pq precisa do <label></label> vazio pras coisas ficarem na mesma coluna?
 class Login {
     constructor() {}
     async render() {
@@ -96,13 +96,12 @@ class Login {
             <section>
                 <h1>Sign In</h1>
                 <div class="login">
-                    <form action="">
+                    <form method="post" action="signup">
                         <label for="nickname">Nickname</label>
                         <input type="text" placeholder="Enter Nickname" name="nickname">
                         <label for="password">Password</label>
                         <input type="password" placeholder="Enter Password" name="password">
                         <label>
-                            <input type="checkbox" name="remember"> Remember me
                         </label>
                         <input type="submit" value="Login">
                     </form>
@@ -111,7 +110,6 @@ class Login {
         `;
     }
 };
-
 class Signup {
     constructor() {}
     async render() {
@@ -127,7 +125,6 @@ class Signup {
                         <label for="repeat_password">Repeat Password</label>
                         <input type="password" placeholder="Enter Password" name="repeat_password">
                         <label>
-                            <input type="checkbox" name="remember"> Remember me
                         </label>
                         <input type="submit" value="Sign Up">
                     </form>

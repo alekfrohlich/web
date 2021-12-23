@@ -1,12 +1,13 @@
 // Proximos passos: assim que o Favarin terminar de escrever o HTML/CSS/JS dos formulários,
 // vamos poder salvar cadastros no banco mathblog. Depois poderemos implementar a postagem de novos posts.
 // Teremos três desafios:
-// 1. Como coletar e armazenar de forma segura as credenciais dos usuários?
 // 2. Como usar cookies para manter o estado de usuário logado?
 //  2.1 Como fazer uma Navbar alternativa pra usuário logado (os botões de sign-in e sign-up devem desaparecer
 //      e os botões de post e sign-out devem aparecer em seus lugares).
 // 3. Melhorar o design da aboutPage e da página das postagens, agora está horrível.
-// jwt
+
+var fs = require("fs");
+var https = require("https");
 
 var mongoClient = require('mongodb').MongoClient;
 const express   = require('express');
@@ -33,6 +34,9 @@ app.use('/css',    express.static('css'));
 app.use('/js',     express.static('js'));
 app.use('/images', express.static('images'));
 
+// To handle login/signup POSTs
+app.use(express.urlencoded({ extended: true }))
+
 // Log activity
 app.all('*', (req, res, next) => {
     console.log(`${req.method} ${req.url}`);
@@ -40,7 +44,7 @@ app.all('*', (req, res, next) => {
 });
 
 // Routes
-app.get(/^\/(index.html)?$/, (req, res) => {
+app.get(/^\/(index)?$/, (req, res) => {
     let page = new Page('Home | MathBlog');
     page.addBodyComponent(new Navbar());
     page.addBodyComponent(new Posts());
@@ -48,7 +52,7 @@ app.get(/^\/(index.html)?$/, (req, res) => {
         res.send(renderedPage);
     });
 });
-app.get('/about.html', (req, res) => {
+app.get('/about', (req, res) => {
     let page = new Page('Home | MathBlog');
     page.addBodyComponent(new Navbar());
     page.addHeadComponent(new MathJax());
@@ -57,7 +61,7 @@ app.get('/about.html', (req, res) => {
         res.send(renderedPage);
     });
 });
-app.get('/login.html', (req, res) => {
+app.get('/login', (req, res) => {
     let page = new Page('Home | MathBlog');
     page.addBodyComponent(new Navbar());
     page.addBodyComponent(new Login());
@@ -65,13 +69,17 @@ app.get('/login.html', (req, res) => {
         res.send(renderedPage);
     });
 });
-app.get('/signup.html', (req, res) => {
+app.get('/signup', (req, res) => {
     let page = new Page('Home | MathBlog');
     page.addBodyComponent(new Navbar());
     page.addBodyComponent(new Signup());
     page.render().then(renderedPage => {
         res.send(renderedPage);
     });
+});
+app.post('/signup', (req, res) => {
+    console.log(req.body);
+    res.end();
 });
 app.get(/^\/posts/, (req, res) => {
     mongoClient.connect(DBURL, (err, db) => {
@@ -91,6 +99,12 @@ app.get(/^\/posts/, (req, res) => {
     });
 });
 
-app.listen(port, () => {
+https.createServer(
+    {
+        key:  fs.readFileSync('sslcerts/server.key'),
+        cert: fs.readFileSync('sslcerts/server.cert'),
+    },
+    app
+).listen(port, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
 });
