@@ -6,15 +6,6 @@ const mongoClient = require('mongodb').MongoClient;
 const URL         = 'mongodb://localhost:27017/';
 const DBNAME      = 'mathblog';
 
-// This will be subbed when the post form is functional on site
-// const PATH      = '/posts/12-12-2021-alekfr-trigonometric-functions.html';
-const PATH      = '/posts/12-13-2021-alekfr-basis-in-infinite-dimensional-vector-spaces.html';
-// const POSTNAME  = 'Trigonometric Functions';
-const POSTNAME  = 'Basis in Infinite Dimensional Vector Spaces';
-const AUTHOR    = 'alekfr';
-const POSTDATE  = '12-13-2021';
-const POST      = fs.readFileSync('.'+PATH).toString('utf-8');
-
 let option;
 if (process.argv.length < 2)
     option = 'Default';
@@ -48,16 +39,24 @@ switch (option) {
         mongoClient.connect(URL, (err, db) => {
             if (err) throw err;
             let dbo = db.db(DBNAME);
-            let post = {
-                path:   PATH,
-                name:   POSTNAME,
-                author: AUTHOR,
-                date:   POSTDATE,
-                latext: POST,
+            let post1 = {
+                path:   '/posts/12-12-2021-alekfr-trigonometric-functions.html',
+                name:   'Trigonometric Functions',
+                author: 'alek',
+                date:   '12-12-2021',
+                latext: fs.readFileSync('./dev/posts/12-12-2021-alekfr-trigonometric-functions.html').toString('utf-8'),
             };
-            dbo.collection('posts').insertOne(post, function(err, res) {
+            let post2 = {
+                path:   '/posts/12-13-2021-alekfr-basis-in-infinite-dimensional-vector-spaces.html',
+                name:   'Basis in Infinite Dimensional Vector Spaces',
+                author: 'alek',
+                date:   '12-13-2021',
+                latext: fs.readFileSync('./dev/posts/12-13-2021-alekfr-basis-in-infinite-dimensional-vector-spaces.html').toString('utf-8'),
+            };
+            posts = [post1, post2];
+            dbo.collection('posts').insertMany(posts, function(err, res) {
                 if (err) throw err;
-                console.log(`Post ${POSTNAME} by ${AUTHOR} inserted!`);
+                console.log(`Posts inserted!`);
                 db.close();
             });
         });

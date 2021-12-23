@@ -81,6 +81,44 @@ class Posts {
 
         return `
             <section class="posts">
+                <style>
+                .theorem {
+                    display: block;
+                    font-style: italic;
+                    }
+                    .theorem:before {
+                    content: "Theorem. ";
+                    font-weight: bold;
+                    font-style: normal;
+                    }
+                    .theorem[text]:before {
+                    content: "Theorem (" attr(text) ") ";
+                    }
+                    .definition {
+                    display: block;
+                    font-style: italic;
+                    }
+                    .definition:before {
+                    content: "Definition. ";
+                    font-weight: bold;
+                    font-style: normal;
+                    }
+                    .definition[text]:before {
+                    content: "Definition (" attr(text) ") ";
+                    }
+                    .hypothesis {
+                    display: block;
+                    font-style: italic;
+                    }
+                    .hypothesis:before {
+                    content: "Hypothesis. ";
+                    font-weight: bold;
+                    font-style: normal;
+                    }
+                    .hypothesis[text]:before {
+                    content: "Hypothesis (" attr(text) ") ";
+                    }
+                </style>
                 <div class="container">
                     <h1>Latest Posts</h1>
                     <ul>
@@ -109,7 +147,7 @@ class Login {
                 <div class="login">
                     <form method="post" action="login">
                         <label for="nickname">Nickname</label>
-                        <input type="text" placeholder="Enter Nickname" name="nickname">
+                        <input type="text" placeholder="Enter Nickname" name="nickname" autofocus>
                         <label for="password">Password</label>
                         <input type="password" placeholder="Enter Password" name="password">
                         <label>
@@ -130,7 +168,7 @@ class Signup {
                 <div class="login">
                     <form method="post" action="signup">
                         <label for="nickname">Nickname</label>
-                        <input type="text" placeholder="Enter Nickname" name="nickname">
+                        <input type="text" placeholder="Enter Nickname" name="nickname" autofocus>
                         <label for="password">Password</label>
                         <input type="password" placeholder="Enter Password" name="password">
                         <label for="repeat_password">Repeat Password</label>
@@ -138,6 +176,27 @@ class Signup {
                         <label>
                         </label>
                         <input type="submit" value="Sign Up">
+                    </form>
+                </div>
+            </section>
+        `;
+    }
+}
+class NewPost { //TODO: Improve Textarea
+    constructor() {}
+    async render() {
+        return `
+            <section>
+                <h1>New Post</h1>
+                <div class="login">
+                    <form method="post" action="post">
+                        <label for="title">Title</label>
+                        <input type="text" placeholder="Enter Title" name="title" autofocus>
+                        <label for="postbody">Write Post</label>
+                        <textarea name="postbody" rows=5 cols=50>Write Post</textarea>
+                        <label>
+                        </label>
+                        <input type="submit" value="Submit">
                     </form>
                 </div>
             </section>
@@ -160,6 +219,9 @@ class MathJax {
     async render() {
         return `
             <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+            <script type="text/x-mathjax-config">
+                MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+            </script>
             <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         `;
     }
@@ -174,4 +236,5 @@ module.exports = {
     Signup,
     Text,
     MathJax,
+    NewPost,
 };

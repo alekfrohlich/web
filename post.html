@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Math Blog</title>
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <div class="navbar">
+            <div class="container">
+                <a class="logo" href="#">Math<span>Blog</span></a>
+                <img id=open-menu class="mobile-menu" src="images/menu.svg" alt="Open Navigation">
+                <nav>
+                    <img id=exit-menu class="mobile-menu-exit" src="images/exit.svg" alt="Close Navigation">
+                    <ul class="primary-nav">
+                        <li><a href="./index.html">Home</a></li>
+                        <li><a href="./about.html">About</a></li>
+                    </ul>
+                    <ul class="login-nav">
+                        <li><a href="./login.html">Sign in</a></li>
+                        <li><a href="./signup.html">Sign up</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    <section>
+        <h1>New Post</h1>
+        <div class="login">
+            <form method="post" action="post">
+                <label for="title">Title</label>
+                <input type="text" placeholder="Enter Title" name="title">
+                <label for="postbody">Write Post</label>
+                <textarea name="postbody" rows=5 cols=50>Write Post</textarea>
+                <label>
+                </label>
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </section>
+    <script>
+        const openMenu = document.getElementById('open-menu')
+        nav = document.querySelector('nav')
+        exitMenu = document.getElementById('exit-menu');
+
+        openMenu.addEventListener('click', () => {
+            nav.classList.add('menu-btn');
+        })
+
+        exitMenu.addEventListener('click', () => {
+            nav.classList.remove('menu-btn');
+        })
+    </script>
+    </body>
+</html>

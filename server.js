@@ -145,26 +145,62 @@ app.get('/logout', (req, res) => {
     })
 });
 app.get('/post', (req, res) => { //TODO: write NewPost component
-    let page = new Page('New Post | MathBlog');
-    page.addBodyComponent(new Navbar(loggedIn(req.session)));
-    page.addBodyComponent(new NewPost());
-    page.render().then(renderedPage => {
-        res.send(renderedPage);
-    });
+    // Not logged in
+    if (!req.session.nickname) {
+        res.redirect('/'); //TODO: warn user
+    } else {
+        let page = new Page('New Post | MathBlog');
+        page.addBodyComponent(new Navbar(loggedIn(req.session)));
+        page.addBodyComponent(new NewPost());
+        page.render().then(renderedPage => {
+            res.send(renderedPage);
+        });
+    }
+
+});
+app.post('/post', (req, res) => {
+    // Not logged in
+    if (!req.session.nickname) {
+        res.redirect('/'); //TODO: warn user
+    } else {
+        title = req.body.title;
+        latext = req.body.postbody;
+        let date = new Date();
+        let year  = date.getFullYear();
+        let month = date.getMonth();
+        let day   = date.getDay();
+        date = `${month}-${day}-${year}`;
+        let path = '/posts/'+date+'-'+title.toLowerCase().replaceAll(' ', '-');
+        let post = {
+            path:   path,
+            name:   title,
+            author: req.session.nickname,
+            date:   date,
+            latext: latext,
+        };
+        mongoClient.connect(DBURL, (err, db) => {
+            let dbo = db.db(DBNAME);
+            dbo.collection('posts').insertOne(post, (err, post) => {
+                if (err) throw err;
+                console.log(`Post ${title} by ${req.session.nickname} inserted!`);
+                db.close();
+            });
+            res.redirect('/');
+        });
+    }
 });
 app.get(/^\/posts/, (req, res) => {
     mongoClient.connect(DBURL, (err, db) => {
         let dbo = db.db(DBNAME);
         dbo.collection('posts').findOne({path: req.url}, (err, post) => {
-            db.close().then(() => {
-                // There should be a unique result since path is Primary Key
-                let page = new Page(post.name+' | Mathblog');
-                page.addHeadComponent(new MathJax());
-                page.addBodyComponent(new Navbar());
-                page.addBodyComponent(new Text(post.latext));
-                page.render().then(renderedPage => {
-                    res.send(renderedPage);
-                });
+            db.close();
+            // There should be a unique result since path is Primary Key
+            let page = new Page(post.name+' | Mathblog');
+            page.addHeadComponent(new MathJax());
+            page.addBodyComponent(new Navbar());
+            page.addBodyComponent(new Text(post.latext));
+            page.render().then(renderedPage => {
+                res.send(renderedPage);
             });
         });
     });
@@ -177,5 +213,5 @@ https.createServer(
     },
     app
 ).listen(port, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
+    console.log(`Server running at https://${hostname}:${port}/`);
 });
