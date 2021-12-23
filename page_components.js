@@ -35,7 +35,7 @@ class Page {
 
 
 class Navbar {
-    constructor() {}
+    constructor(isLoggedIn) { this.isLoggedIn = isLoggedIn; }
     async render() {
         return `
             <div class="navbar">
@@ -48,10 +48,21 @@ class Navbar {
                             <li><a href="/index">Home</a></li>
                             <li><a href="/about">About</a></li>
                         </ul>
-                        <ul class="login-nav">
-                            <li><a href="/login">Sign in</a></li>
-                            <li><a href="/signup">Sign up</a></li>
-                        </ul>
+                        ${(this.isLoggedIn)?
+                            `
+                            <ul class="login-nav">
+                                <li><a href="/post">Post</a></li>
+                                <li><a href="/logout">Log out</a></li>
+                            </ul>
+                            `
+                                :
+                            `
+                            <ul class="login-nav">
+                                <li><a href="/login">Sign in</a></li>
+                                <li><a href="/signup">Sign up</a></li>
+                            </ul>
+                            ` 
+                        }
                     </nav>
                 </div>
             </div>
@@ -96,7 +107,7 @@ class Login {
             <section>
                 <h1>Sign In</h1>
                 <div class="login">
-                    <form method="post" action="signup">
+                    <form method="post" action="login">
                         <label for="nickname">Nickname</label>
                         <input type="text" placeholder="Enter Nickname" name="nickname">
                         <label for="password">Password</label>
@@ -117,7 +128,7 @@ class Signup {
             <section>
                 <h1>Sign Up</h1>
                 <div class="login">
-                    <form action="">
+                    <form method="post" action="signup">
                         <label for="nickname">Nickname</label>
                         <input type="text" placeholder="Enter Nickname" name="nickname">
                         <label for="password">Password</label>
