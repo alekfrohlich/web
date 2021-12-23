@@ -78,8 +78,19 @@ app.get('/signup', (req, res) => {
     });
 });
 app.post('/signup', (req, res) => {
-    console.log(req.body);
-    res.end();
+    nickname = req.body.nickname;
+    password = req.body.password;
+    mongoClient.connect(DBURL, (err, db) => {
+        let dbo = db.db(DBNAME);
+        //TODO: Improve password storage
+        dbo.collection('users').findOne({nickname: nickname, password: password}, (err, user) => {
+            db.close().then(() => {
+                if (user == null) { // User doesn't exist
+
+                }
+            });
+        });
+    });
 });
 app.get(/^\/posts/, (req, res) => {
     mongoClient.connect(DBURL, (err, db) => {
