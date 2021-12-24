@@ -101,12 +101,13 @@ class Posts {
 
 //TODO: Favarin, pq precisa do <label></label> vazio pras coisas ficarem na mesma coluna?
 class Login {
-    constructor() {}
+    constructor(error) { this.error = error; }
     async render() {
         return `
             <section>
                 <h1>Sign In</h1>
                 <div class="login">
+                    ${(this.error)? `<span style="color:red">${this.error}</span>` : ''}
                     <form method="post" action="login">
                         <label for="nickname">Nickname</label>
                         <input type="text" placeholder="Enter Nickname" name="nickname" autofocus>
@@ -122,12 +123,13 @@ class Login {
     }
 };
 class Signup {
-    constructor() {}
+    constructor(error) { this.error = error; }
     async render() {
         return `
             <section>
                 <h1>Sign Up</h1>
                 <div class="login">
+                    ${(this.error)? `<span style="color:red">${this.error}</span>` : ''}
                     <form method="post" action="signup">
                         <label for="nickname">Nickname</label>
                         <input type="text" placeholder="Enter Nickname" name="nickname" autofocus>
@@ -209,8 +211,15 @@ class Text {
             .hypothesis[text]:before {
             content: "Hypothesis (" attr(text) ") ";
             }
+            .post-article {
+                max-width: 64rem;
+                margin: 4rem auto 4rem auto;
+            }
         </style>
-        `+this.text;
+        <article class="post-article">
+            ${this.text}
+        </article>
+        `;
     }
 }
 

@@ -32,7 +32,6 @@ for (const component in components) {
     eval(`var ${component} = components.${component}`);
 }
 
-
 const DBURL   = 'mongodb://localhost:27017/';
 const DBNAME  = 'mathblog';
 
@@ -89,9 +88,10 @@ app.get('/about', (req, res) => {
     });
 });
 app.get('/login', (req, res) => {
+    let queryString = req.query;
     let page = new Page('Login | MathBlog');
     page.addBodyComponent(new Navbar(loggedIn(req.session)));
-    page.addBodyComponent(new Login());
+    page.addBodyComponent(new Login(queryString.error));
     page.render().then(renderedPage => {
         res.send(renderedPage);
     });
@@ -104,7 +104,8 @@ app.post('/login', (req, res) => {
         let dbo = db.db(DBNAME);
         dbo.collection('users').findOne({nickname: nickname, password: password}, (err, user) => {
             if (user == null) { // Invalid usr/pwd combination
-                res.redirect('/login'); //TODO: inform user of wrong usr/pwd combination
+                let parameters = new URLSearchParams({error: 'Invalid Nickname/Password combination!'});
+                res.redirect(`/login?${parameters.toString()}`);
             } else { // User exists, sign-in
                 req.session.nickname = nickname;
                 res.redirect('/');
@@ -115,8 +116,9 @@ app.post('/login', (req, res) => {
 });
 app.get('/signup', (req, res) => {
     let page = new Page('Sign-Up | MathBlog');
+    let queryString = req.query;
     page.addBodyComponent(new Navbar(loggedIn(req.session)));
-    page.addBodyComponent(new Signup());
+    page.addBodyComponent(new Signup(queryString.error));
     page.render().then(renderedPage => {
         res.send(renderedPage);
     });
@@ -133,7 +135,8 @@ app.post('/signup', (req, res) => {
                 req.session.nickname = nickname;
                 res.redirect('/');
             } else { // User already exists
-                res.redirect('/signup'); //TODO: inform user that nickname is taken
+                let parameters = new URLSearchParams({error: 'This Nickname is already in use!'});
+                res.redirect(`/signup?${parameters.toString()}`);
                 db.close();
             }
         });
