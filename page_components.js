@@ -81,44 +81,6 @@ class Posts {
 
         return `
             <section class="posts">
-                <style>
-                .theorem {
-                    display: block;
-                    font-style: italic;
-                    }
-                    .theorem:before {
-                    content: "Theorem. ";
-                    font-weight: bold;
-                    font-style: normal;
-                    }
-                    .theorem[text]:before {
-                    content: "Theorem (" attr(text) ") ";
-                    }
-                    .definition {
-                    display: block;
-                    font-style: italic;
-                    }
-                    .definition:before {
-                    content: "Definition. ";
-                    font-weight: bold;
-                    font-style: normal;
-                    }
-                    .definition[text]:before {
-                    content: "Definition (" attr(text) ") ";
-                    }
-                    .hypothesis {
-                    display: block;
-                    font-style: italic;
-                    }
-                    .hypothesis:before {
-                    content: "Hypothesis. ";
-                    font-weight: bold;
-                    font-style: normal;
-                    }
-                    .hypothesis[text]:before {
-                    content: "Hypothesis (" attr(text) ") ";
-                    }
-                </style>
                 <div class="container">
                     <h1>Latest Posts</h1>
                     <ul>
@@ -193,7 +155,7 @@ class NewPost { //TODO: Improve Textarea
                         <label for="title">Title</label>
                         <input type="text" placeholder="Enter Title" name="title" autofocus>
                         <label for="postbody">Write Post</label>
-                        <textarea name="postbody" rows=5 cols=50>Write Post</textarea>
+                        <textarea name="postbody" rows=20 cols=150>Write Post</textarea>
                         <label>
                         </label>
                         <input type="submit" value="Submit">
@@ -209,7 +171,46 @@ class NewPost { //TODO: Improve Textarea
 class Text {
     constructor(text) { this.text = text; }
     async render() {
-        return this.text;
+        return `
+        <style>
+        .theorem {
+            display: block;
+            font-style: italic;
+            }
+            .theorem:before {
+            content: "Theorem. ";
+            font-weight: bold;
+            font-style: normal;
+            }
+            .theorem[text]:before {
+            content: "Theorem (" attr(text) ") ";
+            }
+            .definition {
+            display: block;
+            font-style: italic;
+            }
+            .definition:before {
+            content: "Definition. ";
+            font-weight: bold;
+            font-style: normal;
+            }
+            .definition[text]:before {
+            content: "Definition (" attr(text) ") ";
+            }
+            .hypothesis {
+            display: block;
+            font-style: italic;
+            }
+            .hypothesis:before {
+            content: "Hypothesis. ";
+            font-weight: bold;
+            font-style: normal;
+            }
+            .hypothesis[text]:before {
+            content: "Hypothesis (" attr(text) ") ";
+            }
+        </style>
+        `+this.text;
     }
 }
 
@@ -218,11 +219,10 @@ class MathJax {
     constructor() {}
     async render() {
         return `
-            <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
             <script type="text/x-mathjax-config">
-                MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+                MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$']]}});
             </script>
-            <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+            <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
         `;
     }
 }
