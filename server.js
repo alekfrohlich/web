@@ -149,7 +149,7 @@ app.get('/logout', (req, res) => {
 });
 app.get('/post', (req, res) => { //TODO: write NewPost component
     // Not logged in
-    if (!req.session.nickname) {
+    if (!loggedIn(req.session)) {
         res.redirect('/'); //TODO: warn user
     } else {
         let page = new Page('New Post | MathBlog');
@@ -163,7 +163,7 @@ app.get('/post', (req, res) => { //TODO: write NewPost component
 });
 app.post('/post', (req, res) => {
     // Not logged in
-    if (!req.session.nickname) {
+    if (!loggedIn(req.session)) {
         res.redirect('/'); //TODO: warn user
     } else {
         title = req.body.title;
@@ -197,14 +197,17 @@ app.get(/^\/posts/, (req, res) => {
         let dbo = db.db(DBNAME);
         dbo.collection('posts').findOne({path: req.url}, (err, post) => {
             db.close();
-            // There should be a unique result since path is Primary Key
-            let page = new Page(post.name+' | Mathblog');
-            page.addHeadComponent(new MathJax());
-            page.addBodyComponent(new Navbar());
-            page.addBodyComponent(new Text(post.latext));
-            page.render().then(renderedPage => {
-                res.send(renderedPage);
-            });
+            if (post == null) {
+                res.redirect('/'); //TODO: warn user
+            } else {
+                let page = new Page(post.name+' | Mathblog');
+                page.addHeadComponent(new MathJax());
+                page.addBodyComponent(new Navbar(loggedIn(req.session)));
+                page.addBodyComponent(new Text(post.latext));
+                page.render().then(renderedPage => {
+                    res.send(renderedPage);
+                });
+            }
         });
     });
 });
