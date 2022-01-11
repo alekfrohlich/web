@@ -9,18 +9,16 @@ const URL         = 'mongodb://localhost:27017/';
 const DBNAME      = 'mathblog';
 
 let post1 = {
-    path:   '/posts/12-12-2021-alekfr-trigonometric-functions.html',
-    name:   'Trigonometric Functions',
+    title:   'Trigonometric Functions',
     author: 'alek',
     date:   '12-12-2021',
     latext: fs.readFileSync('./dev/posts/12-12-2021-alekfr-trigonometric-functions.html').toString('utf-8'),
 };
 let post2 = {
-    path:   '/posts/12-13-2021-alekfr-basis-in-infinite-dimensional-vector-spaces.html',
-    name:   'Basis in Infinite Dimensional Vector Spaces',
+    title:   'Extending Operators',
     author: 'alek',
     date:   '12-13-2021',
-    latext: fs.readFileSync('./dev/posts/12-13-2021-alekfr-basis-in-infinite-dimensional-vector-spaces.html').toString('utf-8'),
+    latext: fs.readFileSync('./dev/posts/12-13-2021-alekfr-extending-operators.html').toString('utf-8'),
 };
 let posts = [post1, post2];
 

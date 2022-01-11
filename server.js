@@ -7,11 +7,35 @@
 // The documentation of this file reflects the needs of those whom will maintain it.
 
 // TODO List
-// Favarim e Nícolas:
-// 1. Melhorar o design da aboutPage e da página das postagens, agora está horrível.
-// 2. Melhorar a segurança do site. As senhas são salvas em plain-text e a MemoryStore de cookies
+// 
+// SEGUNDA ENTREGA:
+// - Fazer o botao da navbar da tela mobile
+// - Escrever mais coisas na pagina de about 
+// - Melhorar o design da página das postagens 
+//      -> deixar as figuras da tela de postagens todas iguais fica estranho
+// - Deixar bonito o titulo e o nome do autor na pagina de cada post
+// - checar com o professor se os dados do 
+//    formulario podem ser enviados da forma como est'a 
+// - checar com o professor se a verificacao do 
+//    formulario como est'a 'e suficiente
+// - checar com o professor se os eventos estao ok
+// - fazer o css das mensagens dos eventos e deixar as mensagens do lado e nao embaixo:
+//      -> sign up nickname - invalid nickname
+//      -> sign up password - different password e invalid first e second password 
+//      -> sign in nickname - vazio
+//      -> sign in password - vazio
+// - fazer o css das condicoes da senha
+// - mudar o css do "hello, nickname" para nao ficar parecendo um link igual aos outros do navbar
+// - deixar os botoes de edit e delete do post bonitos
+// - arrumar a area de escrever e editar os posts -> nao ta diminuindo junto com o tamanho da janela 
+// - a 'area de clicar do MathBlog ta indo muito para a direita -> remover isso, eh estranho
+// - pq tem o home e o MathBlog? -> um nao eh suficiente para ir na pagina dos posts?
+// 
+// TERCEIRA ENTREGA:
+// - deletar o post no bd 
+// - Melhorar a segurança do site. As senhas são salvas em plain-text e a MemoryStore de cookies
 //    aparentemente é leaky.
-// 3. Mostrar o nome do usuário logado.
+// - passar so o nickname para o navbar e nao todo a session - faz diferenca?
 
 var fs = require("fs");
 var https = require("https");
@@ -21,6 +45,7 @@ var https = require("https");
 //     file that made the require.
 // The same holds for Types. If you declare a class C1 inside <module>, you access it via module.C1
 var mongoClient = require('mongodb').MongoClient;
+var ObjectId    = require('mongodb').ObjectId;
 const express   = require('express');
 const session   = require('express-session');
 const app       = express();
@@ -59,11 +84,15 @@ function loggedIn(sess) {
     return 'nickname' in sess;
 }
 
+function canEdit(sess, author) {
+    return sess.nickname === author;
+}
+
 // Routes
 // app.get (or post, put, etc.) accepts either a RegEx or (...)
 app.get(/^\/(index)?$/, (req, res) => {
     let page = new Page('Home | MathBlog');
-    page.addBodyComponent(new Navbar(loggedIn(req.session)));
+    page.addBodyComponent(new Navbar(loggedIn(req.session), req.session));
     page.addBodyComponent(new Posts());
     // Blocking code is almost inexistent in JS. Instead of blocking, it is typical
     // for functions to return Promises (Java's Future). Since Promise<Type> is not Type,
@@ -80,9 +109,15 @@ app.get(/^\/(index)?$/, (req, res) => {
 });
 app.get('/about', (req, res) => {
     let page = new Page('About | MathBlog');
-    page.addBodyComponent(new Navbar(loggedIn(req.session)));
+    page.addBodyComponent(new Navbar(loggedIn(req.session), req.session));
     page.addHeadComponent(new MathJax());
-    page.addBodyComponent(new Text('This is a Math Blog.'));
+    let post = {
+        title:   "About MathBlog",
+        author: "MathBlog",
+        date:   "",
+        latext: 'This is a Math Blog.',
+    };
+    page.addBodyComponent(new Text(false, post));
     page.render().then(renderedPage => {
         res.send(renderedPage);
     });
@@ -90,7 +125,7 @@ app.get('/about', (req, res) => {
 app.get('/login', (req, res) => {
     let queryString = req.query;
     let page = new Page('Login | MathBlog');
-    page.addBodyComponent(new Navbar(loggedIn(req.session)));
+    page.addBodyComponent(new Navbar(loggedIn(req.session), req.session));
     page.addBodyComponent(new Login(queryString.error));
     page.render().then(renderedPage => {
         res.send(renderedPage);
@@ -117,7 +152,7 @@ app.post('/login', (req, res) => {
 app.get('/signup', (req, res) => {
     let page = new Page('Sign-Up | MathBlog');
     let queryString = req.query;
-    page.addBodyComponent(new Navbar(loggedIn(req.session)));
+    page.addBodyComponent(new Navbar(loggedIn(req.session), req.session));
     page.addBodyComponent(new Signup(queryString.error));
     page.render().then(renderedPage => {
         res.send(renderedPage);
@@ -153,7 +188,7 @@ app.get('/post', (req, res) => { //TODO: write NewPost component
         res.redirect('/'); //TODO: warn user
     } else {
         let page = new Page('New Post | MathBlog');
-        page.addBodyComponent(new Navbar(loggedIn(req.session)));
+        page.addBodyComponent(new Navbar(loggedIn(req.session), req.session));
         page.addBodyComponent(new NewPost());
         page.render().then(renderedPage => {
             res.send(renderedPage);
@@ -173,10 +208,8 @@ app.post('/post', (req, res) => {
         let month = date.getMonth();
         let day   = date.getDay();
         date = `${month}-${day}-${year}`;
-        let path = '/posts/'+date+'-'+title.toLowerCase().replaceAll(' ', '-');
         let post = {
-            path:   path,
-            name:   title,
+            title:   title,
             author: req.session.nickname,
             date:   date,
             latext: latext,
@@ -193,23 +226,102 @@ app.post('/post', (req, res) => {
     }
 });
 app.get(/^\/posts/, (req, res) => {
+    let post_id = req.url.substr(7);
     mongoClient.connect(DBURL, (err, db) => {
         let dbo = db.db(DBNAME);
-        dbo.collection('posts').findOne({path: req.url}, (err, post) => {
+        dbo.collection('posts').findOne({_id: ObjectId(post_id)}, (err, post) => {
             db.close();
             if (post == null) {
+                console.log("post does not exist");
                 res.redirect('/'); //TODO: warn user
             } else {
-                let page = new Page(post.name+' | Mathblog');
+                let page = new Page(post.title+' | Mathblog');
                 page.addHeadComponent(new MathJax());
-                page.addBodyComponent(new Navbar(loggedIn(req.session)));
-                page.addBodyComponent(new Text(post.latext));
+                page.addBodyComponent(new Navbar(loggedIn(req.session), req.session));
+                page.addBodyComponent(new Text(canEdit(req.session, post.author), post));
                 page.render().then(renderedPage => {
                     res.send(renderedPage);
                 });
             }
         });
     });
+});
+
+app.get(/^\/edit-post/, (req, res) => {
+    if (!loggedIn(req.session)) {
+        res.redirect('/'); //TODO: warn user
+    } else {
+        mongoClient.connect(DBURL, (err, db) => {
+            let dbo = db.db(DBNAME);
+            let post_id = req.url.substr(11);
+            dbo.collection('posts').findOne({_id: ObjectId(post_id)}, (err, post) => {
+                db.close();
+                if (post == null) {
+                    console.log("post does not exist");
+                    res.redirect('/'); //TODO: warn user
+                }else if (!canEdit(req.session, post.author)) {
+                    console.log("cannot edit");
+                    res.redirect('/'); //TODO: warn user
+                }else {
+                    let page = new Page('Edit Post | MathBlog');
+                    page.addBodyComponent(new Navbar(loggedIn(req.session), req.session));
+                    page.addBodyComponent(new EditPost(post));
+                    page.render().then(renderedPage => {
+                        res.send(renderedPage);
+                    });
+                }
+            });
+        });
+    }
+});
+
+app.post(/^\/edit-post/, (req, res) => {
+    // Not logged in
+    if (!loggedIn(req.session)) {
+        res.redirect('/'); //TODO: warn user
+    } else {
+        title = req.body.title;
+        latext = req.body.postbody;
+        let date = new Date();
+        let year  = date.getFullYear();
+        let month = date.getMonth();
+        let day   = date.getDay();
+        date = `${month}-${day}-${year}`;
+        let post = {
+            title:   title,
+            author: req.session.nickname,
+            date:   date,
+            latext: latext,
+        };
+        mongoClient.connect(DBURL, (err, db) => {
+            let dbo = db.db(DBNAME);
+
+            dbo.collection('posts').replaceOne({_id: ObjectId(req.url.substr(11))} , post, (err, post) => {
+                if (err) throw err;
+                console.log(`Post ${title} updated by ${req.session.nickname} inserted!`);
+                db.close();
+            });
+            res.redirect('/');
+        });
+    }
+});
+
+app.delete(/^\/delete-post/, (req, res) => {
+    // Not logged in
+    if (!loggedIn(req.session)) {
+        res.redirect('/'); //TODO: warn user
+    } else {
+        mongoClient.connect(DBURL, (err, db) => {
+            let dbo = db.db(DBNAME);
+            dbo.collection('posts').deleteOne({_id: ObjectId(req.url.substr(11))}, (err, result) => {
+                if (err) throw err;
+                console.log({result:result})
+                console.log(`Post ${title} deleted by ${req.session.nickname}!`);
+                db.close();
+            });
+            res.redirect('/');
+        });
+    }
 });
 
 https.createServer(
