@@ -2,122 +2,274 @@
 body {
   background: lightgray;
   margin: 0;
-  font-family: 'Poppins'; }
+  font-family: 'Poppins';
+}
 
 .navbar {
   background: white;
-  padding: 1em; }
-  .navbar .logo {
-    text-decoration: none;
-    font-weight: bold;
-    color: #bdaa00;
-    font-size: 1.2em; }
-    .navbar .logo span {
-      color: black; }
-  .navbar nav.menu-btn {
-    display: block; }
-  .navbar nav {
-    display: none;
-    position: fixed;
-    z-index: 999;
-    width: 66%;
-    right: 0;
-    top: 0;
-    background: darkgoldenrod;
-    height: 100vh;
-    padding: 1em; }
-    .navbar nav ul.primary-nav {
-      margin-top: 3em; }
-    .navbar nav li a {
-      color: black;
-      text-decoration: none;
-      display: block;
-      padding: .5em;
-      font-size: 1.3em;
-      text-align: right; }
-    .navbar nav li:hover {
-      font-weight: bold; }
-  .navbar .container {
-    display: flex;
-    place-content: space-between; }
-  .navbar .mobile-menu {
-    cursor: pointer; }
-  .navbar .mobile-menu-exit {
-    float: right;
-    margin: .5em;
-    cursor: pointer; }
+  padding: 1em;
+}
+
+.navbar .logo {
+  text-decoration: none;
+  font-weight: bold;
+  color: #bdaa00;
+  font-size: 1.2em;
+}
+
+.navbar .logo span {
+  color: black;
+}
+
+.navbar nav.menu-btn {
+  display: block;
+}
+
+.navbar nav {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  width: 66%;
+  right: 0;
+  top: 0;
+  background: darkgoldenrod;
+  height: 100vh;
+  padding: 1em;
+}
+
+.navbar nav ul.primary-nav {
+  margin-top: 3em;
+}
+
+.navbar nav li a {
+  color: black;
+  text-decoration: none;
+  display: block;
+  padding: .5em;
+  font-size: 1.3em;
+  text-align: right;
+}
+
+.navbar nav li:hover {
+  font-weight: bold;
+}
+
+.navbar .container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  place-content: space-between;
+}
+
+.navbar .mobile-menu {
+  cursor: pointer;
+}
+
+.navbar .mobile-menu-exit {
+  float: right;
+  margin: .5em;
+  cursor: pointer;
+}
+
+.login h1 {
+  color: #bdaa00;
+}
+
+.login h1 span {
+  color: black;
+}
 
 .login label {
   margin-bottom: 0.2em;
-  display: block; }
+  display: block;
+}
+
 .login input {
   margin-bottom: 0.2em;
   border: 1px;
   border-radius: .3em;
   padding: 0.5em 2em;
-  box-sizing: border-box; }
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
 .login input[type="submit"] {
   margin-top: 1em;
   background-color: #bdaa00;
   color: black;
   font-weight: bold;
-  cursor: pointer; }
+  cursor: pointer;
+}
+
+.login .hidden {
+  font-weight: bold;
+  color: red;
+}
+
+.login .validator {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.login .validator p {
+  margin-left: 1em;
+}
+
+.new-post h1 {
+  margin-bottom: .5em;
+  color: #bdaa00;
+}
+
+.new-post h1 span {
+  color: black;
+}
+
+.new-post label {
+  margin-bottom: 0.2em;
+  display: block;
+  font-size: 1.3em;
+}
+
+.new-post input, .new-post textarea {
+  width: 15%;
+  padding: .5em;
+  border-radius: .3em;
+  margin-bottom: .5em;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.new-post textarea {
+  width: 55%;
+}
+
+.new-post input[type="text"] {
+  width: 30%;
+}
+
+.new-post input[type="submit"] {
+  background-color: #bdaa00;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.actual-post {
+  text-align: center;
+}
+
+.actual-post h2 {
+  font-size: 2em;
+}
+
+.actual-post p {
+  font-style: italic;
+}
+
+.actual-post .post-article {
+  font-size: 0.9em;
+}
+
+.actual-post .edit-delete {
+  display: inline-block;
+}
+
+.actual-post input[type="submit"] {
+  width: 100%;
+  background-color: #bdaa00;
+  color: black;
+  font-weight: bold;
+  border-radius: .3em;
+  margin-right: 2em;
+  cursor: pointer;
+}
 
 a {
-  color: black; }
+  color: black;
+}
 
 ul {
   list-style-type: none;
   margin: 0;
-  padding: 0; }
+  padding: 0;
+}
 
 section {
   padding: 0em 2em;
-  text-align: center; }
-  section li {
-    background: gray;
-    border-radius: 4em;
-    padding: 1em 2em;
-    margin-bottom: 1em;
-    display: inline-block; }
-  section .post-title {
-    text-decoration: none;
-    font-size: 1.2em; }
-  section .post-cite {
-    display: block;
-    font-size: 0.9em; }
-  section .post-image {
-    width: 200px;
-    height: 200px; }
+  text-align: center;
+}
+
+section li {
+  background: gray;
+  border-radius: 4em;
+  padding: 1em 2em;
+  margin-bottom: 1em;
+  display: inline-block;
+}
+
+section .post-title {
+  text-decoration: none;
+  font-size: 1.2em;
+}
+
+section .post-cite {
+  display: block;
+  font-size: 0.9em;
+}
+
+section .post-image {
+  width: 200px;
+  height: 200px;
+}
 
 @media only screen and (min-width: 768px) {
   .mobile-menu, .mobile-menu-exit {
-    display: none; }
-
+    display: none;
+  }
   .navbar .container {
+    display: -ms-grid;
     display: grid;
-    grid-template-columns: 180px auto;
-    justify-content: unset; }
+    -ms-grid-columns: 180px auto;
+        grid-template-columns: 180px auto;
+    -webkit-box-pack: unset;
+        -ms-flex-pack: unset;
+            justify-content: unset;
+  }
   .navbar nav {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    justify-content: space-between;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
     background: none;
     position: unset;
     height: auto;
     width: 100%;
-    padding: 0; }
-    .navbar nav ul.primary-nav {
-      margin: 0; }
-    .navbar nav ul {
-      display: flex; }
-    .navbar nav li a {
-      color: black;
-      font-size: 1em;
-      padding: .1em 1em; }
-
+    padding: 0;
+  }
+  .navbar nav ul.primary-nav {
+    margin: 0;
+  }
+  .navbar nav ul {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+  }
+  .navbar nav li a {
+    color: black;
+    font-size: 1em;
+    padding: .1em 1em;
+  }
   section h1 {
-    margin-bottom: 2em; }
+    margin-bottom: 2em;
+  }
   section li {
-    margin-left: 5em; } }
-
+    margin-left: 5em;
+  }
+}
 /*# sourceMappingURL=style.css.map */

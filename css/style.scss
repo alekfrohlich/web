@@ -73,6 +73,12 @@ body {
 }
 
 .login {
+    h1 {
+        color:rgb(189, 170, 0);
+        span {
+            color: black;
+        }
+    }
     label {
         margin-bottom: 0.2em;
         display: block;
@@ -89,6 +95,76 @@ body {
         background-color: rgb(189, 170, 0);
         color: black;
         font-weight: bold;
+        cursor: pointer;
+    }
+    .hidden {
+        font-weight: bold;
+        color: red;
+    }
+    .validator {
+        display: flex;
+        justify-content: center;
+        p {
+            margin-left: 1em;
+        }
+    }
+}
+
+.new-post {
+    h1 {
+        margin-bottom: .5em;
+        color:rgb(189, 170, 0);
+        span {
+            color: black;
+        }
+    }
+    label {
+        margin-bottom: 0.2em;
+        display: block;
+        font-size: 1.3em;
+    }
+    input, textarea {
+        width: 15%;
+        padding: .5em;
+        border-radius: .3em;
+        margin-bottom: .5em;
+        box-sizing: border-box;
+    }
+    textarea {
+        width: 55%;
+    }
+    input[type="text"] {
+        width: 30%;
+    }
+    input[type="submit"] {
+        background-color: rgb(189, 170, 0);
+        color: black;
+        font-weight: bold;
+        cursor: pointer;
+    }
+}
+
+.actual-post {
+    text-align: center;
+    h2 {
+        font-size: 2em;
+    }
+    p {
+        font-style: italic;
+    }
+    .post-article {
+        font-size: 0.9em;
+    }
+    .edit-delete {
+        display: inline-block;
+    }
+    input[type="submit"] {
+        width: 100%;
+        background-color: rgb(189, 170, 0);
+        color: black;
+        font-weight: bold;
+        border-radius: .3em;
+        margin-right: 2em;
         cursor: pointer;
     }
 }

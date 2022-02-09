@@ -35,7 +35,7 @@ class Page {
 
 
 class Navbar {
-    constructor(isLoggedIn, session) { 
+    constructor(isLoggedIn, session) {
         this.isLoggedIn = isLoggedIn;
         this.nickname = session.nickname;
     }
@@ -55,7 +55,7 @@ class Navbar {
                         ${(this.isLoggedIn)?
                             `
                             <ul class="login-nav">
-                                <li>Hello, ${this.nickname}</li>
+                                <li><a href="/">Hello, ${this.nickname}</a></li>
                                 <li><a href="/post">Post</a></li>
                                 <li><a href="/logout">Log out</a></li>
                             </ul>
@@ -66,7 +66,7 @@ class Navbar {
                                 <li><a href="/login">Sign in</a></li>
                                 <li><a href="/signup">Sign up</a></li>
                             </ul>
-                            ` 
+                            `
                         }
                     </nav>
                 </div>
@@ -111,18 +111,18 @@ class Login {
     async render() {
         return `
             <section>
-                <h1>Sign In</h1>
-                <div class="login">
-                    ${(this.error)? `<span style="color:red">${this.error}</span>` : ''}
+            <div class="login">
+                <h1>Sign <span>In</span></h1>
+                    ${(this.error)? `<span style="color:red; font-weight: bold;">${this.error}</span>` : ''}
                     <form method="post" action="login" id="form">
                         <label for="nickname">Nickname</label>
-                        <input type="text" placeholder="Enter Nickname" name="nickname" 
+                        <input type="text" placeholder="Enter Nickname" name="nickname"
                         id="nickname" autofocus>
-                        <p hidden id="empty_nickname">Empty nickname</p>
+                        <p hidden class="hidden" id="empty_nickname">Empty nickname</p>
                         <label for="password">Password</label>
                         <input type="password" placeholder="Enter Password" name="password"
                         id="password">
-                        <p hidden id="empty_password">Empty password</p>
+                        <p hidden class="hidden" id="empty_password">Empty password</p>
                         <label>
                         </label>
                         <input type="submit" value="Login">
@@ -139,30 +139,33 @@ class Signup {
     async render() {
         return `
             <section>
-                <h1>Sign Up</h1>
-                <div class="login">
+            <div class="login">
+                <h1>Sign <span>Up</span></h1>
                     ${(this.error)? `<span style="color:red">${this.error}</span>` : ''}
                     <form method="post" action="signup" id="form">
                         <label for="nickname">Nickname</label>
-                        <input type="text" placeholder="Enter Nickname" name="nickname" 
+                        <input type="text" placeholder="Enter Nickname" name="nickname"
                         id="nickname"autofocus>
-                        <p hidden id="invalid_nickname">Invalid Nickname</p>
+                        <p hidden class="hidden" id="invalid_nickname">Invalid Nickname</p>
                         <label for="password">Password</label>
                         <input type="password" placeholder="Enter Password" name="password"
                         id="first_password">
+                        <p class="hidden" hidden id="invalid_first_password">Invalid Password</p>
+                        <label for="repeat_password">Repeat Password</label>
+                        <input type="password" placeholder="Enter Password" name="repeat_password"
+                        id="second_password">
+                        <p hidden class="hidden" id="invalid_second_password">Invalid Password</p>
+                        <p hidden class="hidden" id="different_passwords">Different Passwords</p>
+                        <label>
+                        </label>
+                        <input type="submit" value="Sign Up">
+                        <p>Password Requirements:<p>
+                        <div class="validator">
                         <p id="password_lowercase">a-z</p>
                         <p id="password_uppercase">A-Z</p>
                         <p id="password_number">0-9</p>
                         <p id="password_length">length >= 4</p>
-                        <p hidden id="invalid_first_password">Invalid Password</p>
-                        <label for="repeat_password">Repeat Password</label>
-                        <input type="password" placeholder="Enter Password" name="repeat_password"
-                        id="second_password">
-                        <p hidden id="invalid_second_password">Invalid Password</p>
-                        <p hidden id="different_passwords">Different Passwords</p>
-                        <label>
-                        </label>
-                        <input type="submit" value="Sign Up">
+                        </div>
                     </form>
                 </div>
                 <script src="/js/sign_up.js"></script>
@@ -175,8 +178,8 @@ class NewPost { //TODO: Improve Textarea
     async render() {
         return `
             <section>
-                <h1>New Post</h1>
-                <div class="login">
+                <div class="new-post">
+                    <h1>New <span>Post</span></h1>
                     <form method="post" action="post">
                         <label for="title">Title</label>
                         <input type="text" placeholder="Enter Title" name="title" autofocus>
@@ -200,8 +203,8 @@ class EditPost { //TODO: Improve Textarea
     async render() {
         return `
             <section>
-                <h1>${this.post.title}</h1>
-                <div class="login">
+            <div class="new-post">
+                <h1>Edit <span>Post</span></h1>
                     <form method="post" action="">
                         <label for="title">Title</label>
                         <input type="text" value=${this.post.title} name="title" autofocus>
@@ -220,7 +223,7 @@ class EditPost { //TODO: Improve Textarea
 
 // This should be forked into a Post component.
 class Text {
-    constructor(canEdit, post) { 
+    constructor(canEdit, post) {
         this.canEdit = canEdit;
         this.text = post.latext;
         this.post_id = post._id;
@@ -271,14 +274,18 @@ class Text {
                 margin: 4rem auto 4rem auto;
             }
         </style>
-        ${(this.canEdit)? ` <a href="/edit-post/${this.post_id}">Edit</a>
-        <a href="/delete-post/${this.post_id}">Delete</a>` : ''}
+        <div class="actual-post">
         <h2>${this.post_title}</h2>
+        <p>Author: ${this.post_author}</p>
         <script src="/js/text.js"></script>
         <article class="post-article">
             ${this.text}
         </article>
-        <p>${this.post_author}</p>
+        <div class="edit-delete">
+        ${(this.canEdit)? ` <form method="post" style="float:right;" action="/edit-post/${this.post_id}"> <input type="submit" value="Edit"> </form>
+        <form method="post" style="float:left;" action="/delete-post/${this.post_id}"> <input type="submit" value="Delete"> </form>` : ''}
+        </div>
+        </div>
         `;
     }
 }

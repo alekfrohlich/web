@@ -7,32 +7,30 @@
 // The documentation of this file reflects the needs of those whom will maintain it.
 
 // TODO List
-// 
+//
 // SEGUNDA ENTREGA:
 // - Fazer o botao da navbar da tela mobile
-// - Escrever mais coisas na pagina de about 
-// - Melhorar o design da página das postagens 
+//  -> Mas ele ja existia?
+
+// - Melhorar o design da página das postagens
 //      -> deixar as figuras da tela de postagens todas iguais fica estranho
-// - Deixar bonito o titulo e o nome do autor na pagina de cada post
-// - checar com o professor se os dados do 
-//    formulario podem ser enviados da forma como est'a 
-// - checar com o professor se a verificacao do 
+
+// - checar com o professor se os dados do
+//    formulario podem ser enviados da forma como est'a
+// - checar com o professor se a verificacao do
 //    formulario como est'a 'e suficiente
 // - checar com o professor se os eventos estao ok
+
+// TODO:
 // - fazer o css das mensagens dos eventos e deixar as mensagens do lado e nao embaixo:
 //      -> sign up nickname - invalid nickname
-//      -> sign up password - different password e invalid first e second password 
+//      -> sign up password - different password e invalid first e second password
 //      -> sign in nickname - vazio
 //      -> sign in password - vazio
-// - fazer o css das condicoes da senha
-// - mudar o css do "hello, nickname" para nao ficar parecendo um link igual aos outros do navbar
-// - deixar os botoes de edit e delete do post bonitos
-// - arrumar a area de escrever e editar os posts -> nao ta diminuindo junto com o tamanho da janela 
-// - a 'area de clicar do MathBlog ta indo muito para a direita -> remover isso, eh estranho
-// - pq tem o home e o MathBlog? -> um nao eh suficiente para ir na pagina dos posts?
-// 
+
+//
 // TERCEIRA ENTREGA:
-// - deletar o post no bd 
+// - deletar o post no bd
 // - Melhorar a segurança do site. As senhas são salvas em plain-text e a MemoryStore de cookies
 //    aparentemente é leaky.
 // - passar so o nickname para o navbar e nao todo a session - faz diferenca?
@@ -41,7 +39,7 @@ var fs = require("fs");
 var https = require("https");
 
 // module = require(<module>) returns an object which 'serves', in the pratical sense, as a namespace.
-// Thus, if you declare a function f1 inside <module>, then module.f1 is how you access it inside the 
+// Thus, if you declare a function f1 inside <module>, then module.f1 is how you access it inside the
 //     file that made the require.
 // The same holds for Types. If you declare a class C1 inside <module>, you access it via module.C1
 var mongoClient = require('mongodb').MongoClient;
@@ -115,7 +113,7 @@ app.get('/about', (req, res) => {
         title:   "About MathBlog",
         author: "MathBlog",
         date:   "",
-        latext: 'This is a Math Blog.',
+        latext: 'This is a blog for math enthusiasts who want to share their knowledge worldwide.<br>This blog was created by Alek Frohlich, Mateus Favarin and Nicolas Goeldner.',
     };
     page.addBodyComponent(new Text(false, post));
     page.render().then(renderedPage => {

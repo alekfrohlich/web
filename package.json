@@ -2,7 +2,8 @@
   "dependencies": {
     "express": "^4.17.2",
     "express-session": "^1.17.2",
-    "mongodb": "^4.2.1"
+    "mongodb": "^4.2.1",
+    "package.json": "^2.0.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
