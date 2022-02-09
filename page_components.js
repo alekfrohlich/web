@@ -69,6 +69,7 @@ class Navbar {
                             `
                         }
                     </nav>
+                    <script src="/js/navbar.js"></script>
                 </div>
             </div>
         `;
