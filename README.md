@@ -6,6 +6,9 @@ Blog desenvolvido para disciplina INE5646 - Programação Web. É um sistema web
 
 As dependências estão listadas no arquivo _package.json_
 
+## Setup do Banco de Dados do Servidor
+Execute o arquivo setup_db.js
+
 ## Executando
 
 Para executar, digite `npm start`.
