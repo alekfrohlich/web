@@ -6,34 +6,20 @@
 // 5. page_components for Server Side Rendering
 // The documentation of this file reflects the needs of those whom will maintain it.
 
-// TODO List
-//
-// SEGUNDA ENTREGA:
-// - Fazer o botao da navbar da tela mobile
-//  -> Mas ele ja existia?
-
-// - Melhorar o design da página das postagens
-//      -> deixar as figuras da tela de postagens todas iguais fica estranho
-
-// - checar com o professor se os dados do
-//    formulario podem ser enviados da forma como est'a
-// - checar com o professor se a verificacao do
-//    formulario como est'a 'e suficiente
-// - checar com o professor se os eventos estao ok
-
 // TODO:
-// - fazer o css das mensagens dos eventos e deixar as mensagens do lado e nao embaixo:
-//      -> sign up nickname - invalid nickname
-//      -> sign up password - different password e invalid first e second password
-//      -> sign in nickname - vazio
-//      -> sign in password - vazio
-
-//
 // TERCEIRA ENTREGA:
 // - deletar o post no bd
 // - Melhorar a segurança do site. As senhas são salvas em plain-text e a MemoryStore de cookies
 //    aparentemente é leaky.
 // - passar so o nickname para o navbar e nao todo a session - faz diferenca?
+// - fazer o css das mensagens dos eventos e deixar as mensagens do lado e nao embaixo:
+//      -> sign up nickname - invalid nickname
+//      -> sign up password - different password e invalid first e second password
+//      -> sign in nickname - vazio
+//      -> sign in password - vazio
+// - Melhorar o design da página das postagens
+//      -> deixar as figuras da tela de postagens todas iguais fica estranho
+// - Arrumar edit_button no scss 
 
 var fs = require("fs");
 var https = require("https");
@@ -320,6 +306,11 @@ app.delete(/^\/delete-post/, (req, res) => {
             res.redirect('/');
         });
     }
+});
+
+// realmente deletar o post para a terceira entrega 
+app.post(/^\/delete-post/, (req, res) => {
+    res.redirect('/');
 });
 
 https.createServer(

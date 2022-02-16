@@ -278,13 +278,13 @@ class Text {
         <div class="actual-post">
         <h2>${this.post_title}</h2>
         <p>Author: ${this.post_author}</p>
-        <script src="/js/text.js"></script>
         <article class="post-article">
             ${this.text}
         </article>
         <div class="edit-delete">
-        ${(this.canEdit)? ` <form method="post" style="float:right;" action="/edit-post/${this.post_id}"> <input type="submit" value="Edit"> </form>
+        ${(this.canEdit)? `<button id="edit_button">Edit</button>
         <form method="post" style="float:left;" action="/delete-post/${this.post_id}"> <input type="submit" value="Delete"> </form>` : ''}
+        <script src="/js/text.js"></script>
         </div>
         </div>
         `;

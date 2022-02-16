@@ -5,6 +5,16 @@ body {
   font-family: 'Poppins';
 }
 
+#edit_button{
+  width: 27%;
+  background-color: #bdaa00;
+  color: black;
+  font-weight: bold;
+  border-radius: .3em;
+  margin-right: 2em;
+  cursor: pointer;
+}
+
 .navbar {
   background: white;
   padding: 1em;
