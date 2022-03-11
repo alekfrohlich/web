@@ -290,17 +290,17 @@ app.post(/^\/edit-post/, (req, res) => {
     }
 });
 
-app.delete(/^\/delete-post/, (req, res) => {
+app.post(/^\/delete-post/, (req, res) => {
     // Not logged in
     if (!loggedIn(req.session)) {
         res.redirect('/'); //TODO: warn user
     } else {
         mongoClient.connect(DBURL, (err, db) => {
             let dbo = db.db(DBNAME);
-            dbo.collection('posts').deleteOne({_id: ObjectId(req.url.substr(11))}, (err, result) => {
+            dbo.collection('posts').deleteOne({_id: ObjectId(req.url.substr(13))}, (err, result) => {
                 if (err) throw err;
-                console.log({result:result})
-                console.log(`Post ${title} deleted by ${req.session.nickname}!`);
+                console.log({result:result});
+                console.log(`Post ${req.url.substr(13)} deleted by ${req.session.nickname}!`);
                 db.close();
             });
             res.redirect('/');
@@ -308,10 +308,6 @@ app.delete(/^\/delete-post/, (req, res) => {
     }
 });
 
-// realmente deletar o post para a terceira entrega 
-app.post(/^\/delete-post/, (req, res) => {
-    res.redirect('/');
-});
 
 https.createServer(
     {
