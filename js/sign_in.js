@@ -42,10 +42,8 @@ function check_submit(event){
 };
 
 let nickname_elem = document.getElementById("nickname");
-// nickname_elem.addEventListener("focusout", check_nickname);
 
 let password_elem = document.getElementById("password");
-// password_elem.addEventListener("focusout", check_password);
 
 let form_elem = document.getElementById("form");
 form.addEventListener('submit', check_submit);   

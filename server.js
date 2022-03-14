@@ -6,20 +6,6 @@
 // 5. page_components for Server Side Rendering
 // The documentation of this file reflects the needs of those whom will maintain it.
 
-// TODO:
-// TERCEIRA ENTREGA:
-// - Melhorar a segurança do site. As senhas são salvas em plain-text e a MemoryStore de cookies
-//    aparentemente é leaky.
-// - passar so o nickname para o navbar e nao todo a session - faz diferenca?
-// - fazer o css das mensagens dos eventos e deixar as mensagens do lado e nao embaixo:
-//      -> sign up nickname - invalid nickname
-//      -> sign up password - different password e invalid first e second password
-//      -> sign in nickname - vazio
-//      -> sign in password - vazio
-// - Melhorar o design da página das postagens
-//      -> deixar as figuras da tela de postagens todas iguais fica estranho
-// - Arrumar edit_button no scss 
-
 var fs = require("fs");
 var https = require("https");
 
@@ -55,7 +41,7 @@ app.use('/images', express.static('images'));
 // To access form data inside route
 app.use(express.urlencoded({ extended: true }))
 // To manage session
-app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true})); //TODO: secure secret
+app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
 
 // Log activity
 app.all('*', (req, res, next) => {
@@ -167,7 +153,6 @@ app.post('/signup', (req, res) => {
     }else{
         mongoClient.connect(DBURL, (err, db) => {
             let dbo = db.db(DBNAME);
-            //TODO: Improve password storage
             dbo.collection('users').findOne({nickname: nickname}, (err, user) => {
                 if (user == null) { // User doesn't exist, so create one
                     dbo.collection('users').insertOne({nickname: nickname, password: password}).then(() => {db.close();})
@@ -187,10 +172,10 @@ app.get('/logout', (req, res) => {
         res.redirect('/');
     })
 });
-app.get('/post', (req, res) => { //TODO: write NewPost component
+app.get('/post', (req, res) => {
     // Not logged in
     if (!loggedIn(req.session)) {
-        res.redirect('/'); //TODO: warn user
+        res.redirect('/');
     } else {
         let page = new Page('New Post | MathBlog');
         page.addBodyComponent(new Navbar(loggedIn(req.session), req.session));
@@ -204,7 +189,7 @@ app.get('/post', (req, res) => { //TODO: write NewPost component
 app.post('/post', (req, res) => {
     // Not logged in
     if (!loggedIn(req.session)) {
-        res.redirect('/'); //TODO: warn user
+        res.redirect('/');
     } else {
         title = req.body.title;
         latext = req.body.postbody;
@@ -238,7 +223,7 @@ app.get(/^\/posts/, (req, res) => {
             db.close();
             if (post == null) {
                 console.log("post does not exist");
-                res.redirect('/'); //TODO: warn user
+                res.redirect('/');
             } else {
                 let page = new Page(post.title+' | Mathblog');
                 page.addHeadComponent(new MathJax());
@@ -254,7 +239,7 @@ app.get(/^\/posts/, (req, res) => {
 
 app.get(/^\/edit-post/, (req, res) => {
     if (!loggedIn(req.session)) {
-        res.redirect('/'); //TODO: warn user
+        res.redirect('/');
     } else {
         mongoClient.connect(DBURL, (err, db) => {
             let dbo = db.db(DBNAME);
@@ -263,10 +248,10 @@ app.get(/^\/edit-post/, (req, res) => {
                 db.close();
                 if (post == null) {
                     console.log("post does not exist");
-                    res.redirect('/'); //TODO: warn user
+                    res.redirect('/');
                 }else if (!canEdit(req.session, post.author)) {
                     console.log("cannot edit");
-                    res.redirect('/'); //TODO: warn user
+                    res.redirect('/');
                 }else {
                     let page = new Page('Edit Post | MathBlog');
                     page.addBodyComponent(new Navbar(loggedIn(req.session), req.session));
@@ -283,7 +268,7 @@ app.get(/^\/edit-post/, (req, res) => {
 app.post(/^\/edit-post/, (req, res) => {
     // Not logged in
     if (!loggedIn(req.session)) {
-        res.redirect('/'); //TODO: warn user
+        res.redirect('/');
     } else {
         title = req.body.title;
         latext = req.body.postbody;
@@ -325,7 +310,7 @@ app.post(/^\/edit-post/, (req, res) => {
 app.post(/^\/delete-post/, (req, res) => {
     // Not logged in
     if (!loggedIn(req.session)) {
-        res.redirect('/'); //TODO: warn user
+        res.redirect('/');
     } else {
         mongoClient.connect(DBURL, (err, db) => {
             let dbo = db.db(DBNAME);
@@ -344,7 +329,6 @@ app.post(/^\/delete-post/, (req, res) => {
                         db.close();
                     });
                 }
-                // res.redirect('/', 303);
                 res.redirect('/');
             });
         });

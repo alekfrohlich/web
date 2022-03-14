@@ -15,13 +15,6 @@ function check_nickname(){
     }
 };
 
-// function check_password_callback(){
-//     let target = event.target || event.srcElement;
-//     let id = target.id;
-//     console.log({id:id});
-//     check_password(id);
-// }
-
 function check_password(id){
     let password_elem = document.getElementById(id);
     let password = password_elem.value;
@@ -115,11 +108,5 @@ nickname_elem.addEventListener("focusout", check_nickname);
 let first_password_elem = document.getElementById("first_password");
 first_password_elem.addEventListener("keyup", check_password_callback_key);
 
-// let first_password_elem = document.getElementById("first_password");
-// first_password_elem.addEventListener("focusout", check_password_callback);
-
-// let second_password_elem = document.getElementById("second_password");
-// second_password_elem.addEventListener("focusout", check_password_callback);
-
 let form_elem = document.getElementById("form");
-form.addEventListener('submit', check_submit);  
+form.addEventListener('submit', check_submit);
