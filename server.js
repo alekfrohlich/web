@@ -8,7 +8,6 @@
 
 // TODO:
 // TERCEIRA ENTREGA:
-// - deletar o post no bd
 // - Melhorar a segurança do site. As senhas são salvas em plain-text e a MemoryStore de cookies
 //    aparentemente é leaky.
 // - passar so o nickname para o navbar e nao todo a session - faz diferenca?
@@ -142,24 +141,46 @@ app.get('/signup', (req, res) => {
         res.send(renderedPage);
     });
 });
+
+function valid_nickname_password(nickname, password, repeat_password){
+    if(!(/[a-z]/.test(password) && /[A-Z]/.test(password) && /[0-9]/.test(password) && password.length >= 4)){
+        return false;
+    }
+    if(!(password === repeat_password)){
+        return false;
+    }
+    let matches = nickname.match("^[a-zA-Z][a-zA-Z0-9]*$");
+    if(matches == null){
+        return false;
+    }
+    return true;
+}
+
 app.post('/signup', (req, res) => {
     nickname = req.body.nickname;
     password = req.body.password;
-    mongoClient.connect(DBURL, (err, db) => {
-        let dbo = db.db(DBNAME);
-        //TODO: Improve password storage
-        dbo.collection('users').findOne({nickname: nickname}, (err, user) => {
-            if (user == null) { // User doesn't exist, so create one
-                dbo.collection('users').insertOne({nickname: nickname, password: password}).then(() => {db.close();})
-                req.session.nickname = nickname;
-                res.redirect('/');
-            } else { // User already exists
-                let parameters = new URLSearchParams({error: 'This Nickname is already in use!'});
-                res.redirect(`/signup?${parameters.toString()}`);
-                db.close();
-            }
+    repeat_password = req.body.repeat_password;
+    console.log(req.body);
+    if(!valid_nickname_password(nickname, password, repeat_password)){
+        let parameters = new URLSearchParams({error: 'Invalid Nickname or Password!'});
+        res.redirect(`/signup?${parameters.toString()}`);
+    }else{
+        mongoClient.connect(DBURL, (err, db) => {
+            let dbo = db.db(DBNAME);
+            //TODO: Improve password storage
+            dbo.collection('users').findOne({nickname: nickname}, (err, user) => {
+                if (user == null) { // User doesn't exist, so create one
+                    dbo.collection('users').insertOne({nickname: nickname, password: password}).then(() => {db.close();})
+                    req.session.nickname = nickname;
+                    res.redirect('/');
+                } else { // User already exists
+                    let parameters = new URLSearchParams({error: 'This Nickname is already in use!'});
+                    res.redirect(`/signup?${parameters.toString()}`);
+                    db.close();
+                }
+            });
         });
-    });
+    }
 });
 app.get('/logout', (req, res) => {
     req.session.destroy( err => {
@@ -271,7 +292,7 @@ app.post(/^\/edit-post/, (req, res) => {
         let month = date.getMonth();
         let day   = date.getDay();
         date = `${month}-${day}-${year}`;
-        let post = {
+        let new_post = {
             title:   title,
             author: req.session.nickname,
             date:   date,
@@ -279,13 +300,24 @@ app.post(/^\/edit-post/, (req, res) => {
         };
         mongoClient.connect(DBURL, (err, db) => {
             let dbo = db.db(DBNAME);
-
-            dbo.collection('posts').replaceOne({_id: ObjectId(req.url.substr(11))} , post, (err, post) => {
-                if (err) throw err;
-                console.log(`Post ${title} updated by ${req.session.nickname} inserted!`);
-                db.close();
+            let post_id = req.url.substr(11);
+            console.log(post_id);
+            dbo.collection('posts').findOne({_id: ObjectId(post_id)}, (err, post) => {
+                if(post == null){
+                    console.log(`User ${req.session.nickname} has tried to edit non-existent post!`);
+                    db.close();
+                } else if(!(post.author === new_post.author)) {
+                    console.log(`User ${new_post.author} has tried to edit someone else's post!`);
+                    db.close();
+                } else {
+                    dbo.collection('posts').replaceOne({_id: ObjectId(req.url.substr(11))} , new_post, (err, post) => {
+                        if (err) throw err;
+                        console.log(`Post ${title} updated by ${req.session.nickname} inserted!`);
+                        db.close();
+                    });
+                }
+                res.redirect('/');
             });
-            res.redirect('/');
         });
     }
 });
@@ -297,13 +329,24 @@ app.post(/^\/delete-post/, (req, res) => {
     } else {
         mongoClient.connect(DBURL, (err, db) => {
             let dbo = db.db(DBNAME);
-            dbo.collection('posts').deleteOne({_id: ObjectId(req.url.substr(13))}, (err, result) => {
-                if (err) throw err;
-                console.log({result:result});
-                console.log(`Post ${req.url.substr(13)} deleted by ${req.session.nickname}!`);
-                db.close();
+            dbo.collection('posts').findOne({_id: ObjectId(req.url.substr(13))}, (err, post) => {
+                if(post == null){
+                    console.log(`User ${req.session.nickname} has tried to delete non-existent post!`);
+                    db.close();
+                } else if(!(post.author ===  req.session.nickname)) {
+                    console.log(`User ${req.session.nickname} has tried to delete someone else's post!`);
+                    db.close();
+                }else {
+                    dbo.collection('posts').deleteOne({_id: ObjectId(req.url.substr(13))}, (err, result) => {
+                        if (err) throw err;
+                        console.log({result:result});
+                        console.log(`Post ${req.url.substr(13)} deleted by ${req.session.nickname}!`);
+                        db.close();
+                    });
+                }
+                // res.redirect('/', 303);
+                res.redirect('/');
             });
-            res.redirect('/');
         });
     }
 });
