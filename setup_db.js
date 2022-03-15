@@ -20,7 +20,13 @@ let post2 = {
     date:   '12-13-2021',
     latext: fs.readFileSync('./dev/posts/12-13-2021-alekfr-extending-operators.html').toString('utf-8'),
 };
-let posts = [post1, post2];
+let post3 = {
+    title:   'Perceptron',
+    author: 'alek',
+    date:   '03-14-2022',
+    latext: fs.readFileSync('./dev/posts/03-14-2022-alekfr-perceptron.html').toString('utf-8'),
+};
+let posts = [post1, post2, post3];
 
 run = async () => {
     db = await mongoClient.connect(URL+DBNAME);

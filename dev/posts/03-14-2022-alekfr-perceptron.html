@@ -1,0 +1,92 @@
+Suppose you are given a data set of points $(x_1, y_1), (x_2, y_2), ..., (x_n, y_n)$, where each $x_i$ comes from an input space $X \subset \mathbb{R}^d$ and each $y_i$ is either $-1$ or $1$ (negative and positive labels). Here, our task is to find a decision function so that we can label future, unseen points $x$. There are various approaches for building a binary classifier. We will focus on one of the simplest - and earliest, historically - the binary Perceptron. We shall see how the analysis of this algorithm suggests the improvements that give rise to more robust learning algorithms such as Support Vector Machines.
+
+<h3> Decision Function </h3>
+
+The decision function of the binary Perceptron (and SVM) is of the form
+
+$$f(x) = \langle w, x \rangle + b$$
+
+Note that $f(x) = 0$ determines a hyperplane, so that $f(x) > 0$ determines a positive label and $f(x) < 0$ determines a negative label. Since we'll be supposing that the data set is linearly separable, we can force the learning algorithm to find a hyperplane where no training point $x_i$ is such that $f(x_i) = 0$; that is, we will always be able to separate the two classes with some left-over room, a margin, around the hyperplane.
+
+<h3> Setting $b$ to $0$ </h3>
+
+If we also assume that the dataset is separable through the origin, we can do some nice generalizations later on. So we'll do just that. From now on, $b$ is zero in the decision function.
+
+</h3> The learning algorithm </h3>
+
+> Let $w \leftarrow 0$ and $R \leftarrow \max \lvert\lvert x_i \rvert\rvert$    
+> Loop until there are no misclassifications:  
+$\quad$Loop  from $i=1$ to $n$:    
+$\qquad$If $y_i\langle w, x_i \rangle \leq 0$, then  
+$\quad\qquad$$w \leftarrow w + y_ix_i$
+
+<h3> Analysis </h3>
+
+The algorithm is simple and seems to work well on basic training sets, but can we be sure that it always halts with a separating hyperplane? Sure. First, note that, if it halts, then the resulting hyperplane must be correct; for, otherwise, there would be a misclassification and the algorithm wouldn't have halted. As it turns out, we can find an upper bound for the number of misclassifications the algorithm makes. This upper bound depends on two important metrics: the margin and the scale of the dataset. We define them first before moving on to the main theorem.
+
+<div class="definition" text="functional and geometric margin">
+Let $x_i$ be a training point, then, for some fixed hyperplane $w$ around the origin, the functional margin between $x_i$ and the hyperplane is given by
+
+$$\gamma_i = y_i \langle w, x_i \rangle$$
+
+If $\lvert\lvert w \rvert\rvert = 1$, then $\gamma_i$ represents the actual distance between the hyperplane and the training point. When this happens, we call $\gamma_i$ the geometric margin of the training point. Taking the minimum among all $\gamma_i$ we find the functional/geometric margin of the hyperplane.    
+</div><br/>
+
+Notice there are multiple $w$ for the same hyperplane. Indeed, we have a degree of freedom in our choice of $w$ since the only important attribute is its direction. This leads us to defining the canonical $w$ to be that of unitary norm. We now prove the aforementioned bound.
+
+<div class="theorem"> Let $(x_1, y_1), (x_2, y_2), ..., (x_n, y_n)$ be a linearly separable dataset such that there is $w^*$ that correctly classifies the dataset. That is, $y_i\langle w^*, x_i \rangle \geq \gamma$ for some margin $\gamma$. We can also suppose $w^*$ is unitary so that the margin is the geometric margin. Under these conditions, the number of mistakes $t$ made by the Perceptron before it halts is bounded above as follows:
+
+$$t \leq \left( \frac{2R}{\gamma} \right)^2$$
+</div>
+
+For the proof, suppose we let the Perceptron run on the given dataset. Its execution defines a sequence of weight vectors $w_t$, where $w_t$ is the updated weight vector after the $t$-th error and $w_0 = 0$. By definition, we have
+
+$$w_{t+1} = w_t + y_ix_i$$
+
+where $i$ comes from the misclassified example. Using the recursive definition, we get
+
+$$\langle w_t, w^* \rangle = \langle w_{t-1}, w^* \rangle + y_i\langle x_i, w^*\rangle$$
+
+As $w^*$ correctly classifies $x_i$, we obtain
+
+$$\langle w_{t-1}, w^* \rangle + y_i\langle x_i, w^*\rangle \geq \langle w_{t-1}, w^* \rangle + \gamma$$
+
+By repeating this until we reach $w_0$, we end up with
+
+$$\langle w_t, w^* \rangle \geq t\gamma$$
+
+We now seek an inequality in the other direction; we do so by bounding $\lvert\lvert w_t \rvert\rvert$
+
+$$\lvert\lvert w_t \rvert\rvert^2 = \lvert\lvert w_{t-1} \rvert\rvert^2 + 2\langle w_{t-1}, y_ix_i \rangle + \lvert\lvert x_i \rvert\rvert^2$$
+
+Since $w_{t-1}$ misclassified $x_i$, we know the middle expression is less than or equal to zero. Hence,
+
+$$\lvert\lvert w_{t} \rvert\rvert^2 \leq \lvert\lvert w_{t-1} \rvert\rvert^2 + \lvert\lvert x_i \rvert\rvert^2 \leq \lvert\lvert w_{t-1} \rvert\rvert^2 + R^2$$
+
+Applying this multiple times and then taking square roots, we get
+
+$$\lvert\lvert w_{t} \rvert\rvert \leq \sqrt{t}R$$
+
+We can now chain the inequalities together
+
+$$t\gamma \leq \langle w_t, w^* \rangle \leq \lvert\lvert w_t \rvert\rvert \lvert\lvert w^* \rvert\rvert \leq \sqrt{t}R$$
+
+By squaring the inequalities and cancelling $t$, we obtain
+
+$$t\gamma^2 \leq R^2$$
+
+Which finally leads us to the desired inequality
+
+$$t \leq \frac{R}{\gamma}^2$$
+
+It's possible to derive a similar proof for the case where $b = 0$, but then the generalization that follows wouldn't be so straightforward.
+
+Having said that, note we have one bound for each possible $\gamma$. We get the thightest bound by pluging-in the value of $\gamma$ which gives a maximum margin for $w^*$. Furthermore, the bound only depends on the margin $\gamma$ and the scale of the dataset $R$.
+
+<h3> Perceptron on arbitrary Hilbert spaces </h3>
+
+Let $X$ now be an arbitrary Hilbert space (possibly a set of sequences or functions like $\ell^2$ or $L^2$). Thus, the training points $x_i$ are now vectors from this space. We can, nevertheless define the notion of a separating hyperplane and use functions like
+
+$$f(x) = \langle w, x \rangle$$
+
+to classify points. In this setting, we could ask ourselves wether the Perceptron continues to work, and it does! Note that all steps on the proof of the upper bound on $t$ can be performed on abstract Hilbert spaces. Thus, we can separate points in any dimension.
